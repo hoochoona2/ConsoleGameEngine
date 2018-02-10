@@ -12,9 +12,15 @@
 #include <game_engine/lib/lvmv_memory.h>
 #include "kbhit.h"
 
+
+//////////////////
+//색상 정의
+
+//색상 매크로 정의 (C_글자색_배경색)
 #define xx(c1, c2) \
     C_##c1##_##c2,
 
+//text_graphic_color.h에 정의된 색상을 매크로로 정의
 enum
 {
 #include "text_graphic_color.h"
@@ -23,6 +29,7 @@ enum
 
 #undef xx
 
+//자주 사용하는 매크로 이름을 단순화(배경이 검은색인 매크로)
 #define C_BLACK     C_BLACK_BLACK
 #define C_RED       C_RED_BLACK
 #define C_GREEN     C_GREEN_BLACK
@@ -31,17 +38,20 @@ enum
 #define C_MAGENTA   C_MAGENTA_BLACK
 #define C_CYAN      C_CYAN_BLACK
 #define C_WHITE     C_WHITE_BLACK
+/////////////////////
 
-struct lvmv_memory g_mem;
+struct lvmv_memory g_mem; //전역 할당 메모리 관리
 
+/////////////////////
+//최상위 클래스 정의
 struct object;
 struct object_list;
 
-typedef void (draw_f)(struct object *obj);
-typedef int (key_press_f)(struct object *obj, int ch);
-typedef void (object_ctr_f)(struct object *obj);
-typedef void (object_dst_f)(struct object *obj);
-typedef void (conflict_f)(struct object *obj, struct object *target);
+typedef void (draw_f)(struct object *obj); //드로잉 함수
+typedef int (key_press_f)(struct object *obj, int ch); //키 이벤트 함수
+typedef void (object_ctr_f)(struct object *obj); //생성자
+typedef void (object_dst_f)(struct object *obj); //소멸자
+typedef void (conflict_f)(struct object *obj, struct object *target); //객체간의 충돌 이벤트 함수
 
 struct object
 {
@@ -51,15 +61,18 @@ struct object
     object_ctr_f *ctr;
     object_dst_f *dst;
     conflict_f *conf;
-    int type;
-    void *private;
+    int type; // 클래스 아이디
+    void *private; //하위 클래스의 개인데이터
 };
 
+//객체리스트
 struct object_list
 {
     struct object_list *n, *p;
     struct object *obj;
 };
+////////////////////
+
 
 struct pixel
 {
