@@ -1,3 +1,4 @@
+//xx(글자색, 배경색)
 xx(BLACK, BLACK)
 xx(RED, BLACK)
 xx(GREEN, BLACK)
