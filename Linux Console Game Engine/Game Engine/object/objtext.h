@@ -3,6 +3,10 @@
 
 #define OBJ_TEXT    1
 
+/**
+* struct objtext
+* objtext의 클래스, struct object의 private에 할당된다.
+**/
 struct objtext
 {
     char text[256];
