@@ -221,6 +221,10 @@ void fillrectc(struct object *owner, int sx, int sy, int dx, int dy, int color)
     return;
 }
 
+/**
+* object_add(객체)
+* 객체를 등록함. 등록된 객체는 이벤트를 받을 수 있음
+**/
 void object_add(struct object *obj)
 {
     list_add(&g_monitor.obj, obj);
@@ -228,6 +232,10 @@ void object_add(struct object *obj)
     return;
 }
 
+/**
+* object_del(객체)
+* 삭제할 객체를 리스트에 담는다.
+**/
 void object_del(struct object *obj)
 {
     struct object_list *del = (struct object_list*)lvmv_malloc(&g_mem, sizeof(struct object_list));
@@ -236,6 +244,10 @@ void object_del(struct object *obj)
     list_add(&g_objdel, del);
 }
 
+/**
+* _draw()
+* 객체들의 draw()함수를 호출함
+**/
 void _draw()
 {
     struct object *v, *t;
@@ -246,6 +258,10 @@ void _draw()
     }
 }
 
+/**
+* _control()
+* 주기적으로 조작 함수를 호출함.
+**/
 void _control()
 {
     struct object *v ,*t;
@@ -258,6 +274,10 @@ void _control()
     }
 }
 
+/**
+* _delobj()
+* 리스트에 담아뒀던 삭제될 객체를 소멸자를 호출해 삭제함.
+**/
 void _delobj()
 {
     struct object_list *v, *t;
@@ -274,6 +294,10 @@ void _delobj()
 
 }
 
+/**
+* _key_press(입력된 키값)
+* key_press()함수 내에서 0외의 값이 반환되면 프로그램이 종료하게 됨.
+**/
 int _key_press(int ch)
 {
     struct object *v, *t;
@@ -290,6 +314,10 @@ int _key_press(int ch)
     return 0;
 }
 
+/**
+* _conflict()
+* 가상화면의 각 픽셀의 소유자를 확인하고 2이상인 픽셀에 대해 충돌을 대상 객체의 충돌함수를 호출함.
+**/
 void _conflict()
 {
     int x, y;
@@ -317,6 +345,10 @@ void _conflict()
     }
 }
 
+/**
+* game_destroy()
+* 게임엔진, 가상화면, 각 클래스를 해제함.
+**/
 void game_destroy()
 {
     struct object *v, *t;
