@@ -12,9 +12,14 @@
 #include <game_engine/lib/lvmv_memory.h>
 #include "kbhit.h"
 
+/////////////////
+//색상 정의
+
+//색상 전처리 정의 C_글자색_배경색
 #define xx(c1, c2) \
     C_##c1##_##c2,
 
+//text_graphic_color.h에 정의된 색상값을 전처리
 enum
 {
 #include "text_graphic_color.h"
@@ -23,6 +28,7 @@ enum
 
 #undef xx
 
+//자주 사용하는 색상을 단순한 이름으로 정의(배경이 검은색인 색상)
 #define C_BLACK     C_BLACK_BLACK
 #define C_RED       C_RED_BLACK
 #define C_GREEN     C_GREEN_BLACK
@@ -31,9 +37,13 @@ enum
 #define C_MAGENTA   C_MAGENTA_BLACK
 #define C_CYAN      C_CYAN_BLACK
 #define C_WHITE     C_WHITE_BLACK
+////////////////
 
-struct lvmv_memory g_mem;
 
+struct lvmv_memory g_mem;//전역 할당 메모리 관리
+
+////////////////
+//최상위 객체정의
 struct object;
 
 typedef void (draw_f)(struct object *obj);
@@ -51,6 +61,7 @@ struct object
     int type;
     void *private;
 };
+//////////////////
 
 union pixel
 {
