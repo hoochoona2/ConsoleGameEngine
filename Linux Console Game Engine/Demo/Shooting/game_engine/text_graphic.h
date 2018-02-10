@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> 
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -73,7 +73,8 @@ struct object_list
 };
 ////////////////////
 
-
+////////////////////
+//가상 모니터 정의
 struct pixel
 {
     union
@@ -86,22 +87,24 @@ struct pixel
         } ch_pixel;
         unsigned long long int ull_pixel;
     };
-    struct object_list owners;
-    int owners_cnt;
+    struct object_list owners; //이 픽셀을 갖고있는 클래스의 리스트
+    int owners_cnt; //owners의 개수, 2이상일시 owners에 저장된 클래스간의 충돌
 };
 
 struct monitor
 {
-    struct winsize ws;
-    struct pixel** pixel;
+    struct winsize ws; //모니터의 크기
+    struct pixel** pixel; //가상화면
     struct object obj;
 };
+//////////////////
 
+//////////////////
+//가상 화면 조작 & 드로잉 함수
 #define gotoxy(x, y) wmove(stdscr, y-1, x-1)
 
-int game_engine_init();
-void _clear();
-void invalidate();
+//~c함수 : 색상 지정 가능한 함수
+//c가 없는 함수 : 기본색상을 사용하는 함수
 int textoutc(struct object *owner, int x, int y, int color, int attr, char *format, ...);
 #define textout(owner, x, y, format, args...)\
     textoutc(owner, x, y, C_WHITE, 0, format, ##args)
@@ -113,7 +116,13 @@ void rectanglec(struct object *owner, int sx, int sy, int dx, int dy, int color)
 void fillrectc(struct object *owner, int sx, int sy, int dx, int dy, int color);
 #define fillrect(owner, sx, sy, dx, dy)\
     fillrectc(owner, sx, sy, dx, dy, C_WHITE)
+///////////////////
 
+///////////////////
+//게임엔진 코드(게임엔진 소스코드로 이동 예정)
+int game_engine_init();
+void _clear();
+void invalidate();
 void object_add(struct object *obj);
 void object_del(struct object *obj);
 void _draw();
@@ -121,9 +130,14 @@ void _control();
 int _key_press(int ch);
 void _conflict();
 void game_destroy();
+///////////////////
+
+////////////////////
+//가상화면 정보 함수
 int screen_y();
 int screen_x();
 int screen_isy(int y);
 int screen_isx(int x);
+////////////////////
 
 #endif // _TEXT_GRAPHIC_H_
