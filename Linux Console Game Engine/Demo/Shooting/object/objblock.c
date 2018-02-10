@@ -4,7 +4,8 @@
 static void draw(struct object* obj)
 {
     struct objblock *block = (struct objblock*)obj->private;
-    int color[8] =
+    
+    int color[8] = //벽돌 체력을 나타내는 색상
     {
         0,
         C_BLACK_RED,
@@ -38,6 +39,10 @@ static void control(struct object *obj)
     struct objblock *block = (struct objblock*)obj->private;
 }
 
+/**
+* conflict(자신의 객체, 대상의 객체)
+* 총알이 벽돌(자신)이랑 겹쳤다면, 체력을 깍는다.
+**/
 static void conflict(struct object *obj, struct object *target)
 {
     struct objblock *block = (struct objblock*)obj->private;
