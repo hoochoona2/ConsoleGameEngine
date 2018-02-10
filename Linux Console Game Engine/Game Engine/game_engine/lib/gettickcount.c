@@ -2,6 +2,7 @@
 
 typedef unsigned long tick_t;
 
+//윈도우즈API의 GetTickCount()와 유사한 함수
 tick_t get_tick_count()
 {
     tick_t tick = 0ul;
