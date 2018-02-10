@@ -4,7 +4,7 @@
 #include <game_engine/text_graphic.h>
 #include <game_engine/lib/game_engine_lib.h>
 
-#define OBJ_BALL 3
+#define OBJ_BALL 3 //클래스ID
 
 struct objball
 {
