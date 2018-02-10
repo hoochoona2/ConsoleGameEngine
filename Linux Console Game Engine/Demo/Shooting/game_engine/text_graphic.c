@@ -12,18 +12,24 @@ extern void game_init();
 extern void game_main();
 extern int game_keypress();
 
-struct monitor g_monitor;
-struct object_list g_objdel;
+struct monitor g_monitor; //가상모니터
+struct object_list g_objdel; //삭제될 객체리스트
 
+/**
+* game_engine_init()
+* 프로그램 초기화
+**/
 int game_engine_init()
 {
     int y, x, fd;
 
-    lvmv_memory_init(&g_mem);
+    lvmv_memory_init(&g_mem);//메모리 관리 초기화
 
     fd = fileno(stdin);
-    ioctl(fd, TIOCGWINSZ, &g_monitor.ws);
+    ioctl(fd, TIOCGWINSZ, &g_monitor.ws);//윈도우 사이즈를 얻음
 
+    /////////
+    //가상모니터 할당
     g_monitor.pixel = (struct pixel**)lvmv_malloc(&g_mem, sizeof(struct pixel*) * g_monitor.ws.ws_row);
 
     for(y=0; y<g_monitor.ws.ws_row; y++)
@@ -35,36 +41,44 @@ int game_engine_init()
             g_monitor.pixel[y][x].owners_cnt = 0;
         }
     }
+    ////////
 
-    _clear();
+    _clear(); // 가상모니터 리셋
 
-    list_init(&g_monitor.obj);
+    list_init(&g_monitor.obj); //동작중인 객체 리스트
 
+    /////////
+    //화면 & 키보드 초기화
     WINDOW* w;
     w = initscr();
     nodelay(w, TRUE);
-
     keypad(stdscr, TRUE);
+    changemode(1);
+    //////////
 
+    //////////
+    //색상 초기화
     has_colors();
     start_color();
-
-    changemode(1);
 
     int color_index = 0;
 
 #define xx(c1, c2)\
     init_pair(color_index++, COLOR_##c1, COLOR_##c2);
 #include "text_graphic_color.h"
-
 #undef xx
+    ///////////
 
-    list_init(&g_objdel);
-    game_init();
+    list_init(&g_objdel);//삭제될 객체 리스트 초기화
+    game_init();//게임 초기화
 
     return 0;
 }
 
+/**
+* _clear()
+* 가상화면 리셋
+**/
 void _clear()
 {
     int y, x;
@@ -74,7 +88,7 @@ void _clear()
         for(x=0; x<g_monitor.ws.ws_col; x++)
         {
             struct object_list *v, *t;
-
+            //공백(‘ ‘)으로 채움
             g_monitor.pixel[y][x].ch_pixel.ch = BLANK;
             g_monitor.pixel[y][x].ch_pixel.dummy[0] = DUMMY0;
             g_monitor.pixel[y][x].ch_pixel.dummy[1] = DUMMY1;
@@ -89,7 +103,7 @@ void _clear()
 
             g_monitor.pixel[y][x].owners_cnt = 0;
         }
-
+        //NUL문자
         g_monitor.pixel[y][x].ch_pixel.ch = '\0';
         g_monitor.pixel[y][x].ch_pixel.dummy[0] = DUMMY0;
         g_monitor.pixel[y][x].ch_pixel.dummy[1] = DUMMY1;
@@ -100,10 +114,16 @@ void _clear()
     return;
 }
 
+/**
+* invalidate()
+* 가상화면에 그려진 텍스트를 실제 화면에 쓰고 가상화면을 리셋함
+**/
 void invalidate()
 {
     int y, x;
 
+    /////////
+    //실제화면에 쓰는 작업
     for(y=0; y<g_monitor.ws.ws_row; y++)
     {
         for(x=0; x<g_monitor.ws.ws_col; x++)
@@ -114,12 +134,17 @@ void invalidate()
     }
 
     refresh();
+    /////////
 
-    _clear();
+    _clear(); //가상화면 리셋
 
     return;
 }
 
+/**
+* textoutc(소유자, x좌표, y좌표, 색상, 속성, 문자열)
+* 지정한 좌표에 문자열을 씀
+**/
 int textoutc(struct object *owner, int x, int y, int color, int attr, char* format, ...)
 {
     va_list va;
